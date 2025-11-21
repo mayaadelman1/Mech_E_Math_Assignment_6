@@ -24,10 +24,10 @@ function dVdt = string_rate_func01(t,V,string_params)
     
     %unpack state variable
     U = V(1:n);
-    dUdt = V((n+1):(2*n));
+    dUdt = (V((n+1):(2*n)))
 
     Uf = Uf_func(t);
-    dUfdt = dUfdt_func(t)
+    dUfdt = dUfdt_func(t);
     
     %compute acceleration
     H = (M/n)*eye(n);
@@ -38,12 +38,10 @@ function dVdt = string_rate_func01(t,V,string_params)
     K = -Tf/dx * Q;
     B = Tf/dx;
 
-    disp((-K * U + B*Uf))
-    disp(H)
     %d2Udt2 = (-K * U + B*Uf) \ H;
 
-    damping = c/dx*dUdt;
-    d2Udt2 = (-K * U + B*Uf + damping) \H
+    damping = (c/dx*dUdt)
+    d2Udt2 = ((-K * U + B*Uf + damping) \H)'
 
 
     % d2Udt2 = -inv(M)*U
@@ -54,5 +52,5 @@ function dVdt = string_rate_func01(t,V,string_params)
     %     if i > 1 || i < n
     % end
     % %assemble state derivative
-    dVdt = [dUdt;d2Udt2];
+    dVdt = [dUdt d2Udt2]
 end
