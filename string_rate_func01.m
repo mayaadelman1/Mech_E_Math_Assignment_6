@@ -32,12 +32,14 @@ function dVdt = string_rate_func01(t,V,string_params)
     %compute acceleration
     H = M/n*eye(n);
     I = eye(n);
-    Q = -2*I + circshift(I, [0, 1]) + circhsift(I, [0, -1]);
+    Q = -2*I + circshift(I, [0, 1]) + circshift(I, [0, -1]);
     Q(1, end) = 0;
     Q(end, 1) = 0;
     K = -Tf/dx * Q;
     B = Tf/dx;
-    d2Udt2 = (-K * U + B*Uf)/H;
+    disp((-K * U + B*Uf))
+    disp(H)
+    d2Udt2 = (-K * U + B*Uf) / H;
 
     % d2Udt2 = -inv(M)*U
     % K = zeros(n);

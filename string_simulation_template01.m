@@ -1,16 +1,19 @@
 function string_simulation_01()
-    num_masses = 4;
+    num_masses = 2;
     total_mass = 10;
     tension_force = 100;
-    string_length = %your code here
-    damping_coeff = %your code here
+    string_length = 0.5;
+    damping_coeff = 0.01;
     dx = string_length/(num_masses+1);
-    amplitude_Uf = %your code here
-    omega_Uf = %your code here
+    amplitude_Uf = 0.5;
+    omega_Uf = 0.5;
+
     %list of x points (including the two endpoints)
     xlist = linspace(0,string_length,num_masses+2);
     Uf_func = @(t_in) amplitude_Uf*cos(omega_Uf*t_in);
     dUfdt_func = @(t_in) -omega_Uf*amplitude_Uf*sin(omega_Uf*t_in);
+
+
     %generate the struct
     string_params = struct();
     string_params.n = num_masses;
@@ -21,17 +24,28 @@ function string_simulation_01()
     string_params.L = string_length;
     string_params.c = damping_coeff;
     string_params.dx = dx;
+
+
     %load string_params into rate function
     my_rate_func = @(t_in,V_in) string_rate_func01(t_in,V_in,string_params);
+
+
     %initial conditions
-    U0 = %your code here
-    dUdt0 = %your code here
+    U0 = [0; 0; 0];
+    dUdt0 = [0; 0; 0];
     V0 = [U0;dUdt0];
-    tspan = [0 10]
+    tspan = [0 10];
 
     %run the integration
     h_ref = 0.01; BT_struct = get_BT("Dormand Prince");
     [tlist,Vlist] = explicit_RK_fixed_step_integration(my_rate_func,tspan,V0, h_ref, BT_struct);
+
     %your code to generate an animation of the system
-    
+    fig1 = figure('Name','Animation','NumberTitle','off');
+
+    tdiff = [0; diff(tlist)];
+    for i = 1:length(tlist)
+        plot(xlist, Vlist(i, 1:num_masses+2), 'LineWidth', 2);
+        pause(tdiff);
+    end
 end

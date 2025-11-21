@@ -29,7 +29,7 @@ function [t_list,X_list,h_avg, num_evals] = explicit_RK_fixed_step_integration(r
 
     % run numerical differentiation method based on parameters given above
     for i=2:length(X_list)
-        [X_next, evals]=ARI_explicit_RK_step(rate_func_in, t_list(i-1), X_list(i-1,:)', h_avg, BT_struct);
+        [X_next, evals]=explicit_RK_step(rate_func_in, t_list(i-1), X_list(i-1,:)', h_avg, BT_struct);
         X_list(i,:) = X_next;
         num_evals = num_evals + evals;
     end
