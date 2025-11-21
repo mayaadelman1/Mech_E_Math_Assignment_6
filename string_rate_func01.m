@@ -27,10 +27,10 @@ function dVdt = string_rate_func01(t,V,string_params)
     dUdt = V((n+1):(2*n));
 
     Uf = Uf_func(t);
-    dUfdt = dUfdt_func(t);
+    dUfdt = dUfdt_func(t)
     
     %compute acceleration
-    H = M/n*eye(n);
+    H = (M/n)*eye(n);
     I = eye(n);
     Q = -2*I + circshift(I, [0, 1]) + circshift(I, [0, -1]);
     Q(1, end) = 0;
@@ -40,9 +40,11 @@ function dVdt = string_rate_func01(t,V,string_params)
 
     disp((-K * U + B*Uf))
     disp(H)
-    d2Udt2 = (-K * U + B*Uf) / H;
-    d2Udt2 = (-K * U + B*Uf + damping)/H;
+    %d2Udt2 = (-K * U + B*Uf) \ H;
+
     damping = c/dx*dUdt;
+    d2Udt2 = (-K * U + B*Uf + damping) \H
+
 
     % d2Udt2 = -inv(M)*U
     % K = zeros(n);
