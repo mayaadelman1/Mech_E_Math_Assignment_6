@@ -24,27 +24,38 @@ function dVdt = string_rate_func01(t,V,string_params)
     
     %unpack state variable
     U = V(1:n);
-    dUdt = (V((n+1):(2*n)))
+    dUdt = (V((n+1):(2*n)));
 
     Uf = Uf_func(t);
     dUfdt = dUfdt_func(t);
     
-    %compute acceleration
-    H = (M/n)*eye(n);
-    I = eye(n);
-    Q = -2*I + circshift(I, [0, 1]) + circshift(I, [0, -1]);
-    Q(1, end) = 0;
-    Q(end, 1) = 0;
-    K = -Tf/dx * Q;
-    B = Tf/dx;
+    % %compute acceleration
+    % H = (M/n)*eye(n);
+    % I = eye(n);
+    % Q = -2*I + circshift(I, [0, 1]) + circshift(I, [0, -1]);
+    % Q(1, end) = 0;
+    % Q(end, 1) = 0;
+    % K = -Tf/dx * Q;
+    % B = Tf/dx;
+
+    U_left = [U(2:end);Uf];
+    U_right = [0;U(1:end-1)];
+
+    dU_left = [dUdt(2:end);dUfdt];
+    dU_right = [0;dUdt(1:end-1)];
+
+    term1 = (Tf/dx)*(U_left-2*U+U_right);
+    term2 = c*(dU_left-2*dUdt+dU_right);
+
+    d2Udt2 = (term1+term2)/(M/n);
 
     %d2Udt2 = (-K * U + B*Uf) \ H;
 
-    damping = c/dx*dUdt;
-    d2Udt2 = (-K * U + B*Uf + damping) \H;
-
-    damping = (c/dx*dUdt)
-    d2Udt2 = ((-K * U + B*Uf + damping) \H)'
+    % damping = c/dx*dUdt;
+    % d2Udt2 = (-K * U + B*Uf + damping) \H;
+    % 
+    % damping = (c/dx*dUdt)
+    % d2Udt2 = ((-K * U + B*Uf + damping) \H)'
 
 
 

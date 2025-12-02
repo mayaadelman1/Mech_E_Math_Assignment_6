@@ -38,6 +38,7 @@ function string_simulation_01()
 
     %run the integration
     h_ref = 0.01; BT_struct = get_BT("Dormand Prince");
+
     [tlist,Vlist] = explicit_RK_fixed_step_integration(my_rate_func,tspan,V0, h_ref, BT_struct);
 
     %your code to generate an animation of the system
