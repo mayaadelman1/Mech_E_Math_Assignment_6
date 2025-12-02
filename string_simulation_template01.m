@@ -1,12 +1,12 @@
 function string_simulation_01()
     num_masses = 2;
-    total_mass = 10;
-    tension_force = 100;
+    total_mass = 5;
+    tension_force = 20;
     string_length = 0.5;
     damping_coeff = 0.01;
     dx = string_length/(num_masses+1);
     amplitude_Uf = 0.5;
-    omega_Uf = 0.5;
+    omega_Uf = 0.2;
 
     %list of x points (including the two endpoints)
     xlist = linspace(0,string_length,num_masses+2);
@@ -31,7 +31,7 @@ function string_simulation_01()
 
 
     %initial conditions
-    U0 = [0; 0; 0];
+    U0 = [0.2; -0.1; -0.2];
     dUdt0 = [0; 0; 0];
     V0 = [U0;dUdt0];
     tspan = [0 10];
