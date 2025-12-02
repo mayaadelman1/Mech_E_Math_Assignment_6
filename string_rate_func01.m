@@ -43,7 +43,7 @@ function dVdt = string_rate_func01(t,V,string_params)
     %d2Udt2 = (-K * U + B*Uf) \ H;
 
     damping = c/dx*dUdt;
-    d2Udt2 = (-K * U + B*Uf + damping) \H
+    d2Udt2 = (-K * U + B*Uf + damping) \H;
 
 
     % d2Udt2 = -inv(M)*U
