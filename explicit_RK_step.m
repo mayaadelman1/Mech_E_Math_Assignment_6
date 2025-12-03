@@ -23,7 +23,7 @@ function [XB, num_evals] = explicit_RK_step(rate_func_in,t,XA,h,BT_struct)
 
     % Populate K matrix based on input function
     for i = 1:s
-        disp(K(:,i))
+        %disp(K(:,i))
         K(:,i) = rate_func_in(t+BT_struct.C(i)*h, XA + h*(K*BT_struct.A(i,:)'));
     end
    

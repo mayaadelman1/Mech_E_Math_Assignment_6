@@ -1,5 +1,6 @@
 function string_simulation_01()
-    num_masses = 2;
+    clc;
+    num_masses = 4;
     total_mass = 5;
     tension_force = 20;
     string_length = 0.5;
@@ -31,8 +32,8 @@ function string_simulation_01()
 
 
     %initial conditions
-    U0 = [0.2; -0.1; -0.2];
-    dUdt0 = [0; 0; 0];
+    U0 = [0.2; -0.1; -0.2; -0.1];
+    dUdt0 = [0; 0; 0; 0];
     V0 = [U0;dUdt0];
     tspan = [0 10];
 
@@ -46,8 +47,9 @@ function string_simulation_01()
     hold on
     ylim([-8 8])
 
-    %disp(length(tlist))
-    %disp(length(Vlist))
+    disp(xlist)
+    disp(Vlist)
+
     masses = scatter(xlist, Vlist(1, 1:num_masses+2), "filled");
     string = plot(xlist, Vlist(1, 1:num_masses+2), 'LineWidth', 2);
 
