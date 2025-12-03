@@ -1,5 +1,5 @@
 function string_simulation_01()
-    num_masses = 3;
+    num_masses = 2;
     total_mass = 5;
     tension_force = 20;
     string_length = 0.5;
