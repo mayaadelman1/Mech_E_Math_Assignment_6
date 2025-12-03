@@ -44,18 +44,15 @@ function string_simulation_01()
     %your code to generate an animation of the system
     fig1 = figure('Name','Animation','NumberTitle','off');
     hold on
-    ylim([-8 8])
+    ylim([-5 5])
 
-    %disp(length(tlist))
-    %disp(length(Vlist))
-    masses = scatter(xlist, Vlist(1, 1:num_masses+2), "filled");
-    string = plot(xlist, Vlist(1, 1:num_masses+2), 'LineWidth', 2);
-
+    disp(length(tlist))
+    disp(
+    h = plot(xlist, Vlist(1, 1:num_masses+2), 'LineWidth', 2);
     tdiff = [0; diff(tlist)];
     for i = 1:length(tlist)
-        set(masses, 'XData', xlist, 'YData', Vlist(i, 1:num_masses+2));
-        set(string, 'XData', xlist, 'YData', Vlist(i, 1:num_masses+2));
+        set(h, 'XData', xlist, 'YData', Vlist(i, 1:num_masses+2));
         drawnow;
-        pause(tdiff(i));
+        pause(tdiff);
     end
 end
