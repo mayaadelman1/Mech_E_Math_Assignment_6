@@ -1,6 +1,6 @@
 function string_simulation_01()
     clc;
-    num_masses = 4;
+    num_masses = 3;
     total_mass = 5;
     tension_force = 20;
     string_length = 0.5;
@@ -32,10 +32,10 @@ function string_simulation_01()
 
 
     %initial conditions
-    U0 = [0.2; -0.1; -0.2; -0.1];
-    dUdt0 = [0; 0; 0; 0];
+    U0 = zeros(num_masses,1);
+    dUdt0 = zeros(num_masses,1);
     V0 = [U0;dUdt0];
-    tspan = [0 10];
+    tspan = [0 25];
 
     %run the integration
     h_ref = 0.01; BT_struct = get_BT("Dormand Prince");
@@ -45,19 +45,30 @@ function string_simulation_01()
     %your code to generate an animation of the system
     fig1 = figure('Name','Animation','NumberTitle','off');
     hold on
-    ylim([-8 8])
+    ylim([-2 2])
 
     disp(xlist)
     disp(Vlist)
 
-    masses = scatter(xlist, Vlist(1, 1:num_masses+2), "filled");
-    string = plot(xlist, Vlist(1, 1:num_masses+2), 'LineWidth', 2);
+
+    %Uf_func(tlist)
+
+    points = Vlist(:, 1:num_masses);
+    points = [zeros(length(points), 1) points Uf_func(tlist)]
+
+
+    masses = scatter(xlist, points(1,:), "filled");
+    string = plot(xlist, points(1,:), 'LineWidth', 2);
 
     tdiff = [0; diff(tlist)];
+    
+
+
     for i = 1:length(tlist)
-        set(masses, 'XData', xlist, 'YData', Vlist(i, 1:num_masses+2));
-        set(string, 'XData', xlist, 'YData', Vlist(i, 1:num_masses+2));
+        set(masses, 'XData', xlist, 'YData', points(i,:));
+        set(string, 'XData', xlist, 'YData', points(i,:));
         drawnow;
+        %disp(tlist(i));
         pause(tdiff(i));
     end
 end
