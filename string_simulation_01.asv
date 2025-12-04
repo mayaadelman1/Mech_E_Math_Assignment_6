@@ -54,11 +54,17 @@ function string_simulation_01()
     string = plot(xlist, Vlist(1, 1:num_masses), 'LineWidth', 2);
 
     tdiff = [0; diff(tlist)];
+    
+    length(zeros(1,length(tlist)))
+    size(Vlist(:, 1:num_masses))
+    length(Uf_func(tlist))
 
-    points = [ V_list(:, 1:num_masses)
+    points = Vlist(:, 1:num_masses)
+    points = [zeros(length(points), 1) points Uf_func(tlist)]
+
     for i = 1:length(tlist)
-        set(masses, 'XData', xlist, 'YData', Vlist(i, 1:num_masses));
-        set(string, 'XData', xlist, 'YData', Vlist(i, 1:num_masses));
+        set(masses, 'XData', xlist, 'YData', points(i,:));
+        set(string, 'XData', xlist, 'YData', points(i,:));
         drawnow;
         pause(tdiff(i));
     end

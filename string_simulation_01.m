@@ -10,7 +10,7 @@ function string_simulation_01()
     omega_Uf = 0.2;
 
     %list of x points (including the two endpoints)
-    xlist = linspace(0,string_length,num_masses);
+    xlist = linspace(0,string_length,num_masses+2);
     Uf_func = @(t_in) amplitude_Uf*cos(omega_Uf*t_in);
     dUfdt_func = @(t_in) -omega_Uf*amplitude_Uf*sin(omega_Uf*t_in);
 
@@ -35,7 +35,7 @@ function string_simulation_01()
     U0 = zeros(num_masses,1);
     dUdt0 = zeros(num_masses,1);
     V0 = [U0;dUdt0];
-    tspan = [0 10];
+    tspan = [0 25];
 
     %run the integration
     h_ref = 0.01; BT_struct = get_BT("Dormand Prince");
@@ -45,26 +45,30 @@ function string_simulation_01()
     %your code to generate an animation of the system
     fig1 = figure('Name','Animation','NumberTitle','off');
     hold on
-    ylim([-8 8])
+    ylim([-2 2])
 
     disp(xlist)
     disp(Vlist)
 
-    masses = scatter(xlist, Vlist(1, 1:num_masses), "filled");
-    string = plot(xlist, Vlist(1, 1:num_masses), 'LineWidth', 2);
+
+    %Uf_func(tlist)
+
+    points = Vlist(:, 1:num_masses);
+    points = [zeros(length(points), 1) points Uf_func(tlist)]
+
+
+    masses = scatter(xlist, points(1,:), "filled");
+    string = plot(xlist, points(1,:), 'LineWidth', 2);
 
     tdiff = [0; diff(tlist)];
     
-    length(zeros(1,length(tlist)))
-    size(Vlist(:, 1:num_masses))
-    length(Uf_func(tlist))
 
-    points = [zeros(length(tlist), 1); Vlist(:, 1:num_masses)]
 
     for i = 1:length(tlist)
-        set(masses, 'XData', xlist, 'YData', Vlist(i, 1:num_masses));
-        set(string, 'XData', xlist, 'YData', Vlist(i, 1:num_masses));
+        set(masses, 'XData', xlist, 'YData', points(i,:));
+        set(string, 'XData', xlist, 'YData', points(i,:));
         drawnow;
+        %disp(tlist(i));
         pause(tdiff(i));
     end
 end
