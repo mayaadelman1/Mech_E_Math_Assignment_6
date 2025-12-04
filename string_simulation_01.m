@@ -1,6 +1,6 @@
 function string_simulation_01()
     clc;
-    num_masses = 4;
+    num_masses = 3;
     total_mass = 5;
     tension_force = 20;
     string_length = 0.5;
@@ -10,7 +10,7 @@ function string_simulation_01()
     omega_Uf = 0.2;
 
     %list of x points (including the two endpoints)
-    xlist = linspace(0,string_length,num_masses+2);
+    xlist = linspace(0,string_length,num_masses);
     Uf_func = @(t_in) amplitude_Uf*cos(omega_Uf*t_in);
     dUfdt_func = @(t_in) -omega_Uf*amplitude_Uf*sin(omega_Uf*t_in);
 
@@ -32,8 +32,8 @@ function string_simulation_01()
 
 
     %initial conditions
-    U0 = [0.2; -0.1; -0.2; -0.1];
-    dUdt0 = [0; 0; 0; 0];
+    U0 = zeros(num_masses,1);
+    dUdt0 = zeros(num_masses,1);
     V0 = [U0;dUdt0];
     tspan = [0 10];
 
@@ -50,13 +50,20 @@ function string_simulation_01()
     disp(xlist)
     disp(Vlist)
 
-    masses = scatter(xlist, Vlist(1, 1:num_masses+2), "filled");
-    string = plot(xlist, Vlist(1, 1:num_masses+2), 'LineWidth', 2);
+    masses = scatter(xlist, Vlist(1, 1:num_masses), "filled");
+    string = plot(xlist, Vlist(1, 1:num_masses), 'LineWidth', 2);
 
     tdiff = [0; diff(tlist)];
+    
+    length(zeros(1,length(tlist)))
+    size(Vlist(:, 1:num_masses))
+    length(Uf_func(tlist))
+
+    points = [zeros(length(tlist), 1); Vlist(:, 1:num_masses)]
+
     for i = 1:length(tlist)
-        set(masses, 'XData', xlist, 'YData', Vlist(i, 1:num_masses+2));
-        set(string, 'XData', xlist, 'YData', Vlist(i, 1:num_masses+2));
+        set(masses, 'XData', xlist, 'YData', Vlist(i, 1:num_masses));
+        set(string, 'XData', xlist, 'YData', Vlist(i, 1:num_masses));
         drawnow;
         pause(tdiff(i));
     end
