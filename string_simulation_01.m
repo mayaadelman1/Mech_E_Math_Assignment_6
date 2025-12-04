@@ -61,3 +61,4 @@ function string_simulation_01()
         pause(tdiff(i));
     end
 end
+
