@@ -1,6 +1,6 @@
 function string_simulation_01()
     clc;
-    num_masses = 3;
+    num_masses = 4;
     total_mass = 5;
     tension_force = 20;
     string_length = 0.5;
@@ -47,14 +47,14 @@ function string_simulation_01()
     hold on
     ylim([-2 2])
 
-    disp(xlist)
-    disp(Vlist)
+    %disp(xlist)
+    %disp(Vlist)
 
 
     %Uf_func(tlist)
 
     points = Vlist(:, 1:num_masses);
-    points = [zeros(length(points), 1) points Uf_func(tlist)]
+    points = [zeros(length(points), 1) points Uf_func(tlist)];
 
 
     masses = scatter(xlist, points(1,:), "filled");
