@@ -13,12 +13,7 @@
 %M_mat: the n x n mass (inertia) matrix
 %K_mat: the n x n stiffness matrix
 function [M_mat,K_mat] = construct_2nd_order_matrices(string_params)
-    
-    M_total = string_params.M;
-    n = string_params.n;
-    Tf = string_params.Tf;
-    dx = string_params.dx;
 
-    M_mat = (M_total/n) * eye(n);
-    K_mat = (-Tf / dx) * laplacian_matrix(n);
+    %Use MATLAB to solve the generalized eigenvalue problem
+    [Ur_mat,lambda_mat] = eig(K_mat,M_mat);
 end

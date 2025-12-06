@@ -4,10 +4,10 @@ function string_simulation_01()
     total_mass = 5;
     tension_force = 20;
     string_length = 0.5;
-    damping_coeff = 0.01;
+    damping_coeff = 0.05;
     dx = string_length/(num_masses+1);
     amplitude_Uf = 0.5;
-    omega_Uf = 0.2;
+    omega_Uf = 7.8176;
 
     %list of x points (including the two endpoints)
     xlist = linspace(0,string_length,num_masses+2);
@@ -27,15 +27,19 @@ function string_simulation_01()
     string_params.dx = dx;
 
 
+    % run modal analysis
+    [omega_vec, Ur_mat] = string_modal_analysis(string_params)
+
     %load string_params into rate function
     my_rate_func = @(t_in,V_in) string_rate_func01(t_in,V_in,string_params);
+
 
 
     %initial conditions
     U0 = zeros(num_masses,1);
     dUdt0 = zeros(num_masses,1);
     V0 = [U0;dUdt0];
-    tspan = [0 25];
+    tspan = [0 100];
 
     %run the integration
     h_ref = 0.01; BT_struct = get_BT("Dormand Prince");
@@ -44,14 +48,27 @@ function string_simulation_01()
 
     %your code to generate an animation of the system
     fig1 = figure('Name','Animation','NumberTitle','off');
-    hold on
-    ylim([-2 2])
+    
 
     %disp(xlist)
     %disp(Vlist)
+    
+    % mode shape plotting
 
+    mode_points = Ur_mat(:,1);
+    mode_points = [0; mode_points; 0]
 
-    %Uf_func(tlist)
+    fig1 =figure('Name','Mode Shape','NumberTitle','off'); hold on
+    ylim([-1 1])
+
+    masses = scatter(xlist, mode_points, "filled");
+    string = plot(xlist, mode_points, 'LineWidth', 2);
+    hold off;
+
+    % animation
+    fig2 = figure('Name','Animation','NumberTitle','off');
+    hold on
+    ylim([-25 25])
 
     points = Vlist(:, 1:num_masses);
     points = [zeros(length(points), 1) points Uf_func(tlist)];
