@@ -1,19 +1,22 @@
 function string_simulation_01()
     clc;
-    num_masses = 4;
-    total_mass = 5;
+    num_masses = 250;
+    total_mass = num_masses;
     tension_force = 20;
     string_length = 0.5;
-    damping_coeff = 0.05;
+    damping_coeff = 0.001;
     dx = string_length/(num_masses+1);
     amplitude_Uf = 0.5;
-    omega_Uf = 7.8176;
+    omega_Uf = 3;
 
     %list of x points (including the two endpoints)
     xlist = linspace(0,string_length,num_masses+2);
     Uf_func = @(t_in) amplitude_Uf*cos(omega_Uf*t_in);
     dUfdt_func = @(t_in) -omega_Uf*amplitude_Uf*sin(omega_Uf*t_in);
 
+    
+    Uf_func = @(t_in) triangle_pulse(t_in, 1, 1);
+    dUfdt_func = @(t_in) triangle_pulse_derivative(t_in, 1, 1);
 
     %generate the struct
     string_params = struct();
@@ -28,7 +31,8 @@ function string_simulation_01()
 
 
     % run modal analysis
-    [omega_vec, Ur_mat] = string_modal_analysis(string_params)
+    [omega_vec, Ur_mat] = string_modal_analysis(string_params);
+
 
     %load string_params into rate function
     my_rate_func = @(t_in,V_in) string_rate_func01(t_in,V_in,string_params);
@@ -39,7 +43,7 @@ function string_simulation_01()
     U0 = zeros(num_masses,1);
     dUdt0 = zeros(num_masses,1);
     V0 = [U0;dUdt0];
-    tspan = [0 100];
+    tspan = [0 25];
 
     %run the integration
     h_ref = 0.01; BT_struct = get_BT("Dormand Prince");
@@ -56,7 +60,7 @@ function string_simulation_01()
     % mode shape plotting
 
     mode_points = Ur_mat(:,1);
-    mode_points = [0; mode_points; 0]
+    mode_points = [0; mode_points; 0];
 
     fig1 =figure('Name','Mode Shape','NumberTitle','off'); hold on
     ylim([-1 1])
@@ -68,7 +72,7 @@ function string_simulation_01()
     % animation
     fig2 = figure('Name','Animation','NumberTitle','off');
     hold on
-    ylim([-25 25])
+    ylim([-5 5])
 
     points = Vlist(:, 1:num_masses);
     points = [zeros(length(points), 1) points Uf_func(tlist)];
