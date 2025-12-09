@@ -37,21 +37,21 @@ function dVdt = string_rate_func01(t,V,string_params)
     dU_right = [0;dUdt(1:end-1)];
 
     term1 = (Tf/dx)*(U_left-2*U+U_right);
-    term2 = c*(dU_left-2*dUdt+dU_right);
+    term2 = (c/dx)*(dU_left-2*dUdt+dU_right);
 
     d2Udt2 = (term1+term2)/(M/n);
 
     % computing boundary condition special cases
     
-    % first point:
-    term1 = (Tf/dx)*(0 - 2*U(1) + U(2));
-    term2 = (c/dx)*(0 - 2*dUdt(1) + dUdt(2));
-    d2Udt2(1) = (term1+term2)/(M/n);
-
-    % last point
-    term1 = (Tf/dx) * (U(n-1) - 2*U(n) + Uf);
-    term2 = (c/dx) * (dUdt(n-1) - 2*dUdt(n) + dUfdt);
-    d2Udt2(n) = (term1+term2)/(M/n);
+    % % first point:
+    % term1 = (Tf/dx)*(0 - 2*U(1) + U(2));
+    % term2 = (c/dx)*(0 - 2*dUdt(1) + dUdt(2));
+    % d2Udt2(1) = (term1+term2)/(M/n);
+    % 
+    % % last point
+    % term1 = (Tf/dx) * (U(n-1) - 2*U(n) + Uf);
+    % term2 = (c/dx) * (dUdt(n-1) - 2*dUdt(n) + dUfdt);
+    % d2Udt2(n) = (term1+term2)/(M/n);
 
     %d2Udt2 = (-K * U + B*Uf) \ H;
 

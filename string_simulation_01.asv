@@ -4,7 +4,7 @@ function string_simulation_01()
     total_mass = num_masses;
     tension_force = 2;
     string_length = 0.5;
-    damping_coeff = 0.001;
+    damping_coeff = 0.0001;
     dx = string_length/(num_masses+1);
     amplitude_Uf = 0.5;
     omega_Uf = 0.9922;
@@ -15,7 +15,7 @@ function string_simulation_01()
     dUfdt_func = @(t_in) -omega_Uf*amplitude_Uf*sin(omega_Uf*t_in);
 
 
-    w = string_length/5;
+    w = string_length/20;
     h = 2;
    
     
@@ -33,11 +33,10 @@ function string_simulation_01()
     % Uf_func = @(t_in) triangle_pulse(t_in, w, h);
     % dUfdt_func = @(t_in) c_wave*triangle_pulse_derivative(t_in, w, h);
     
-    Uf_func = @(t_in) b_spline_pulse(t_in, w/c_wave, h);
-    dUfdt_func = @(t_in) c_wave*b_spline_pulse_derivative(t_in, w/c_wave, h);
+    % Uf_func = @(t_in) b_spline_pulse(t_in, w/c_wave, h);
+    % dUfdt_func = @(t_in) 0*b_spline_pulse_derivative(t_in, w/c_wave, h);
 
-    % Uf_func = @(t_in) 0*t_in;
-    % dUfdt_func = @(t_in) 0*t_in;
+    
 
     string_params.Uf_func = Uf_func;
     string_params.dUfdt_func = dUfdt_func;
@@ -55,14 +54,7 @@ function string_simulation_01()
     %initial conditions
     U0 = zeros(num_masses,1);
     dUdt0 = zeros(num_masses,1);
-
-    % x_temp = linspace(0,string_params.L,num_masses+2)';
-    % x_temp = x_temp(2:end-1);
-
-    % U0 = b_spline_pulse(x_temp, w, h);
-    % dUdt0 =  -c_wave*b_spline_pulse_derivative(x_temp, w, h);
     V0 = [U0;dUdt0];
-    size(V0)
     % tspan = [0 25];
 
     tspan = linspace(0,3*string_params.L/c_wave,5001);
@@ -93,7 +85,7 @@ function string_simulation_01()
     % animation
     fig2 = figure('Name','Animation','NumberTitle','off');
     hold on
-    ylim([-5 5])
+    ylim([-.2 .2])
     tracking_line = xline(0, 'r', 'LineWidth', 2);
 
     points = Vlist(:, 1:num_masses);
@@ -112,7 +104,7 @@ function string_simulation_01()
         set(string, 'XData', xlist, 'YData', points(i,:));
         
         % tracking line position
-        x_pos = string_length + c_wave * tlist(i) - w/2;       % pulse moving to the right
+        x_pos = string_length + c_wave * tlist(i);       % pulse moving to the right
         x_pos = mod(x_pos, 2*string_length);
 
         if x_pos > string_length
@@ -122,16 +114,15 @@ function string_simulation_01()
         set(tracking_line, 'Value', x_pos);
 
         drawnow;
-        title("Traveling Wave Animation");
         %disp(tlist(i));
         %pause(tdiff(i));
     end
     
     % Modal analysis
-    %figure();
-    %mode_shapes = amplitude_Uf*sin(((pi*num_masses)/L))*xlist;
+    figure();
+    mode_shapes = amplitude_Uf*sin(((pi*n)/L))*xlist;
 
-    %plot(mode_shapes, xlist);
+    plot(mode_shapes, xlist);
 
     % rho = string_params.M/string_params.L;
     % c = sqrt(string_params.Tf/rho);
