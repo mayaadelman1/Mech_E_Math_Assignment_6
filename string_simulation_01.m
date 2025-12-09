@@ -7,16 +7,16 @@ function string_simulation_01()
     damping_coeff = 0.001;
     dx = string_length/(num_masses+1);
     amplitude_Uf = 0.5;
-    omega_Uf = 3;
+    omega_Uf = 5;
 
     %list of x points (including the two endpoints)
     xlist = linspace(0,string_length,num_masses+2);
     Uf_func = @(t_in) amplitude_Uf*cos(omega_Uf*t_in);
     dUfdt_func = @(t_in) -omega_Uf*amplitude_Uf*sin(omega_Uf*t_in);
 
-    
-    Uf_func = @(t_in) triangle_pulse(t_in, 1, 1);
-    dUfdt_func = @(t_in) triangle_pulse_derivative(t_in, 1, 1);
+
+    Uf_func = @(t_in) triangle_pulse(t_in, 1, 2);
+    dUfdt_func = @(t_in) triangle_pulse_derivative(t_in, 1, 2);
 
     %generate the struct
     string_params = struct();
@@ -78,7 +78,7 @@ function string_simulation_01()
     points = [zeros(length(points), 1) points Uf_func(tlist)];
 
 
-    masses = scatter(xlist, points(1,:), "filled");
+    %masses = scatter(xlist, points(1,:), "filled");
     string = plot(xlist, points(1,:), 'LineWidth', 2);
 
     tdiff = [0; diff(tlist)];
@@ -86,7 +86,7 @@ function string_simulation_01()
 
 
     for i = 1:length(tlist)
-        set(masses, 'XData', xlist, 'YData', points(i,:));
+        %set(masses, 'XData', xlist, 'YData', points(i,:));
         set(string, 'XData', xlist, 'YData', points(i,:));
         drawnow;
         %disp(tlist(i));
