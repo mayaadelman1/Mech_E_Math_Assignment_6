@@ -7,7 +7,7 @@ function string_simulation_01()
     damping_coeff = 0.001;
     dx = string_length/(num_masses+1);
     amplitude_Uf = 0.5;
-    omega_Uf = 5;
+    omega_Uf = 0.9922;
 
     %list of x points (including the two endpoints)
     xlist = linspace(0,string_length,num_masses+2);
@@ -15,8 +15,11 @@ function string_simulation_01()
     dUfdt_func = @(t_in) -omega_Uf*amplitude_Uf*sin(omega_Uf*t_in);
 
 
-    Uf_func = @(t_in) triangle_pulse(t_in, 1, 2);
-    dUfdt_func = @(t_in) triangle_pulse_derivative(t_in, 1, 2);
+    w = string_length/20;
+    h = 2;
+   
+    Uf_func = @(t_in) triangle_pulse(t_in, w, h);
+    dUfdt_func = @(t_in) triangle_pulse_derivative(t_in, w, h);
 
     %generate the struct
     string_params = struct();
@@ -32,6 +35,7 @@ function string_simulation_01()
 
     % run modal analysis
     [omega_vec, Ur_mat] = string_modal_analysis(string_params);
+    omega_vec(1)
 
 
     %load string_params into rate function
@@ -46,12 +50,11 @@ function string_simulation_01()
     tspan = [0 25];
 
     %run the integration
-    h_ref = 0.01; BT_struct = get_BT("Dormand Prince");
+    h_ref = 0.002; BT_struct = get_BT("Dormand Prince");
 
     [tlist,Vlist] = explicit_RK_fixed_step_integration(my_rate_func,tspan,V0, h_ref, BT_struct);
 
     %your code to generate an animation of the system
-    fig1 = figure('Name','Animation','NumberTitle','off');
     
 
     %disp(xlist)
@@ -90,7 +93,7 @@ function string_simulation_01()
         set(string, 'XData', xlist, 'YData', points(i,:));
         drawnow;
         %disp(tlist(i));
-        pause(tdiff(i));
+        %pause(tdiff(i));
     end
 end
 
