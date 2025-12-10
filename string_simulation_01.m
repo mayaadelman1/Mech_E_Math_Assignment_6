@@ -71,14 +71,11 @@ function string_simulation_01()
 
     [tlist,Vlist] = ode45(my_rate_func,tspan,V0);
     % [tlist,Vlist] = explicit_RK_fixed_step_integration(my_rate_func,tspan,V0, h_ref, BT_struct);
-
-    %your code to generate an animation of the system
-    
-
     %disp(xlist)
     %disp(Vlist)
     
-    % mode shape plotting
+
+    % Mode Shape Plotting
 
     mode_points = Ur_mat(:,1);
     mode_points = [0; mode_points; 0];
@@ -90,8 +87,8 @@ function string_simulation_01()
     string = plot(xlist, mode_points, 'LineWidth', 2);
     hold off;
 
-    % animation
-    fig2 = figure('Name','Animation','NumberTitle','off');
+    % Animation
+    %fig2 = figure('Name','Animation','NumberTitle','off');
     hold on
     ylim([-5 5])
     tracking_line = xline(0, 'r', 'LineWidth', 2);
@@ -99,17 +96,14 @@ function string_simulation_01()
     points = Vlist(:, 1:num_masses);
     points = [zeros(length(points), 1) points Uf_func(tlist)];
 
-
     %masses = scatter(xlist, points(1,:), "filled");
     string = plot(xlist, points(1,:), 'LineWidth', 2);
 
     tdiff = [0; diff(tlist)];
     
-
-
     for i = 1:length(tlist)
         %set(masses, 'XData', xlist, 'YData', points(i,:));
-        set(string, 'XData', xlist, 'YData', points(i,:));
+        %set(string, 'XData', xlist, 'YData', points(i,:));
         
         % tracking line position
         x_pos = string_length + c_wave * tlist(i) - w/2;       % pulse moving to the right
@@ -121,60 +115,65 @@ function string_simulation_01()
         
         set(tracking_line, 'Value', x_pos);
 
-        drawnow;
+        %drawnow;
         title("Traveling Wave Animation");
         %disp(tlist(i));
         %pause(tdiff(i));
     end
+
+
+    % MODAL ANALYSIS
+
+    % Mode shapes and frequencies
+    rho = total_mass / string_length;          % linear density
+    num_modes = 6;                               % number of continuous modes to plot
+
+    x_cont = linspace(0, string_length, 2000); 
+
+    figure('Name','Continuous Mode Shapes','NumberTitle','off'); 
+    tiledlayout(3,2);
+
+    for n = 1:num_modes
     
-    % Modal analysis
-    %figure();
-    %mode_shapes = amplitude_Uf*sin(((pi*num_masses)/L))*xlist;
+        % continuous resonant frequency
+        omega_n = c_wave * (pi*n) / string_length; 
 
-    %plot(mode_shapes, xlist);
+        % continuous mode shape
+        Xn = sin( (pi*n/string_length) * x_cont ); 
 
-    % rho = string_params.M/string_params.L;
-    % c = sqrt(string_params.Tf/rho);
-    % 
-    % omega_n_spatial = pi*mode_index/string_params.L;
-    % omega_n = c*omega_n_spatial;
-    % 
-    % x_list = linspace(0, string_params.L, n+2);
-    % x_list = x_list(2:end-1);
-    % 
-    % x_list_continuous = linspace(0, string_params.L, 1000);
-    % mode_shape_WE = sin(omega_n_spatial*x_list);
-    % 
-    % hold on
-    % plot(x_list_continuous, mode_shape_WE, 'k');
-    % n = 200;
-    % string_params.n = n; % number of masses
-    % string_params.dx = string_params.L/(n+1); %horizontal spacing between masses
-    % 
-    % n_list = [8, 10, 30, 50];
-    % 
-    % omega_list = []; 
-    % 
-    % for k = 1:length(n_list)
-    %     n = n_list(k);
-    % 
-    %     [M_mat, K_mat]= construct_2nd_order_matrices(string_params);
-    % 
-    %     %Use MATLAB to solve the generalized eigenvalue problem
-    %     [Ur_mat,lambda_mat] = eig(K_mat,M_mat);
-    % 
-    %     mode_shape_LA = Ur_mat([0; Ur_mat(:, n+1-mode_index); 0]);
-    %     mode_shape_LA = 1/max(abs(mode_shape_LA));
-    % 
-    %     omega_n = sqrt(-lambda_mat(n+1-mode_index, n+1-mode_index));
-    %     omega_list(end+1)
-    %     x_list = linspace(0, string_params.L, n+2)';
-    % 
-    %     subplot(x_list, mode_shape_LA, 'o-', 'color', 'k', 'linewidth', 2, 'markerfacecolor', 'r', 'markeredgecolor', 'r', 'markersize', 4);
-    % end
-    %     figure();
-    % 
-    %     semilogx(n_list, omega_list, 'o-', 'markerfacecolor', 'r', 'markersize', 3);
-    %     semilogx(n_list, ones(length(n_list), 1)*omega_n_WE, 'b--', 'linewidth', 2);
+        nexttile
+        plot(x_cont, Xn, 'LineWidth', 2);
+        title(sprintf("Continuous Mode %d  (ω_n = %.3f rad/s)", n, omega_n));
+        xlabel("x"); ylabel("X_n(x)");
+    end
+
+    sgtitle('Continuous Wave Equation Mode Shapes and Frequencies');
+
+ 
+   % Mode shape vs. discrete approximations comparisons
+   
+   % PSEUDOCODE FOR THIS SECTION:
+   % 1) make num masses list (5-7 ish values)
+   % 2) Set n and .dx string params to what you want them to be (experiment04 in Orion's code)
+   % 3) Construct M and K mat from string_modal_analysis
+   % 4) Compute Ur mat and lamda mat from that
+   % 5) Take your mode shape code (this line:  Xn = sin( (pi*n/string_length) * x_cont ));. That will be one thing you're plotting.
+   % 6) Add a zero to left and right of Ur_mat to include the endpoints
+   % 7) Rescale mode shape la
+        %Ex: V = V/max(abs(V)); for any vector v
+   
+   % 8) Compute corresponding frequency (omega) using lambda mat from eig function in string_modal_analysis. Store result in list. 
+   % 9) Generate x-coordinates from masses based on your num masses list. 
+
+      % 8) and 9) is basically this code from Orion's in class code:
+            % omega_n_spatial = pi*mode_index/string_params.L;
+            % omega_n = c*omega_n_spatial;
+            % 
+            % 
+            % 
+            % x_list_continuous = linspace(0, string_params.L, 1000);
+            % mode_shape_WE = sin(omega_n_spatial*x_list);
+
+
 end
 
