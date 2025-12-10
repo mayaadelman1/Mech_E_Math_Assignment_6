@@ -1,0 +1,99 @@
+function string_simulation_01()
+    clc;
+    num_masses = 250;
+    total_mass = num_masses;
+    tension_force = 20;
+    string_length = 0.5;
+    damping_coeff = 0.001;
+    dx = string_length/(num_masses+1);
+    amplitude_Uf = 0.5;
+    omega_Uf = 0.9922;
+
+    %list of x points (including the two endpoints)
+    xlist = linspace(0,string_length,num_masses+2);
+    Uf_func = @(t_in) amplitude_Uf*cos(omega_Uf*t_in);
+    dUfdt_func = @(t_in) -omega_Uf*amplitude_Uf*sin(omega_Uf*t_in);
+
+
+    w = string_length/20;
+    h = 2;
+   
+    Uf_func = @(t_in) triangle_pulse(t_in, w, h)';
+    dUfdt_func = @(t_in) triangle_pulse_derivative(t_in, w, h)';
+
+    %generate the struct
+    string_params = struct();
+    string_params.n = num_masses;
+    string_params.M = total_mass;
+    string_params.Uf_func = Uf_func;
+    string_params.dUfdt_func = dUfdt_func;
+    string_params.Tf = tension_force;
+    string_params.L = string_length;
+    string_params.c = damping_coeff;
+    string_params.dx = dx;
+
+
+    % run modal analysis
+    [omega_vec, Ur_mat] = string_modal_analysis(string_params);
+    omega_vec(1)
+
+
+    %load string_params into rate function
+    my_rate_func = @(t_in,V_in) string_rate_func01(t_in,V_in,string_params);
+
+
+
+    %initial conditions
+    U0 = zeros(num_masses,1);
+    dUdt0 = zeros(num_masses,1);
+    V0 = [U0;dUdt0];
+    tspan = [0 25];
+
+    %run the integration
+    h_ref = 0.002; BT_struct = get_BT("Dormand Prince");
+
+    [tlist,Vlist] = explicit_RK_fixed_step_integration(my_rate_func,tspan,V0, h_ref, BT_struct);
+
+    %your code to generate an animation of the system
+    
+
+    %disp(xlist)
+    %disp(Vlist)
+    
+    % mode shape plotting
+
+    mode_points = Ur_mat(:,1);
+    mode_points = [0; mode_points; 0];
+
+    fig1 =figure('Name','Mode Shape','NumberTitle','off'); hold on
+    ylim([-1 1])
+
+    masses = scatter(xlist, mode_points, "filled");
+    string = plot(xlist, mode_points, 'LineWidth', 2);
+    hold off;
+
+    % animation
+    fig2 = figure('Name','Animation','NumberTitle','off');
+    hold on
+    ylim([-5 5])
+
+    points = Vlist(:, 1:num_masses);
+    points = [zeros(length(points), 1) points Uf_func(tlist)];
+
+
+    %masses = scatter(xlist, points(1,:), "filled");
+    string = plot(xlist, points(1,:), 'LineWidth', 2);
+
+    tdiff = [0; diff(tlist)];
+    
+
+
+    for i = 1:length(tlist)
+        %set(masses, 'XData', xlist, 'YData', points(i,:));
+        set(string, 'XData', xlist, 'YData', points(i,:));
+        drawnow;
+        %disp(tlist(i));
+        %pause(tdiff(i));
+    end
+end
+
