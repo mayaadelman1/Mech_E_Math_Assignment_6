@@ -163,8 +163,9 @@ function string_simulation_01()
         %Ex: V = V/max(abs(V)); for any vector v
    
    % 8) Compute corresponding frequency (omega) using lambda mat from eig function in string_modal_analysis. Store result in list. 
-      % Generate x-coordinates from masses based on your num masses list. 
-      % This is basically this code from Orion's in class code:
+   % 9) Generate x-coordinates from masses based on your num masses list. 
+
+      % 8) and 9) is basically this code from Orion's in class code:
             % omega_n_spatial = pi*mode_index/string_params.L;
             % omega_n = c*omega_n_spatial;
             % 
@@ -172,7 +173,5 @@ function string_simulation_01()
             % 
             % x_list_continuous = linspace(0, string_params.L, 1000);
             % mode_shape_WE = sin(omega_n_spatial*x_list);
-
-
 end
 
