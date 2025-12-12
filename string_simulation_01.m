@@ -173,5 +173,37 @@ function string_simulation_01()
             % 
             % x_list_continuous = linspace(0, string_params.L, 1000);
             % mode_shape_WE = sin(omega_n_spatial*x_list);
+
+    n = 5;
+    mode_index = 3;
+
+    string_params.n = n; % number of masses
+    string_params.dx = string_params.L/(n+1); %horizontal spacing between masses
+    
+    num_masses = [8, 10, 30, 50];
+
+    for k = 1:length(num_masses)
+        n = num_masses(k);
+
+        [M_mat, K_mat]= construct_2nd_order_matrices(string_params);
+
+        %Use MATLAB to solve the generalized eigenvalue problem
+        [Ur_mat,lambda_mat] = eig(K_mat,M_mat);
+
+        mode_shape_LA = Ur_mat([0; Ur_mat(:, n+1-mode_index); 0]);
+        mode_shape_LA = 1/max(abs(mode_shape_LA));
+
+        omega_n_spatial = pi*mode_index/string_params.L;
+        omega_n = c*omega_n_spatial;
+    
+        x_list = linspace(0, string_params.L, n+2);
+        x_list = x_list(2:end-1);
+
+        x_list_continuous = linspace(0, string_params.L, 1000);
+        mode_shape_WE = sin(omega_n_spatial*x_list);
+
+        subplot(x_list, mode_shape_LA, 'o-', 'color', 'k', 'linewidth', 2, 'markerfacecolor', 'r', 'markeredgecolor', 'r', 'markersize', 4);
+    end
 end
 
+    
