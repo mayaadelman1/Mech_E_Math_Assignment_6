@@ -178,18 +178,21 @@ function string_simulation_01()
 
     
 
-    mode_index = 2;
+    mode_index = 3;
 
     string_params.n = n; % number of masses
     string_params.dx = string_params.L/(n+1); %horizontal spacing between masses
     
-    num_masses = [5, 10, 50, 500];
+    %num_masses = [4, 5, 15, 300];
+    num_masses = [3, 5, 10, 20, 30, 50, 100, 150, 200, 250, 300];
+    
+    %num_masses = linspace(2,300, 298)
 
     rho = string_params.M/string_params.L;
     c = sqrt(string_params.Tf/rho);
 
     omega_n_spatial = pi*mode_index/string_params.L;
-    omega_n = c*omega_n_spatial;
+    omega_n2 = c*omega_n_spatial;
 
     x_list = linspace(0, string_params.L, n+2);
     x_list = x_list(2:end-1);
@@ -197,17 +200,19 @@ function string_simulation_01()
     x_list_continuous = linspace(0, string_params.L, 1000);
     mode_shape_WE = sin(omega_n_spatial*x_list_continuous);
     
-    figure('Name','Test Approximation','NumberTitle','off');
-    hold on
-    plot(x_list_continuous, mode_shape_WE, 'k'); hold off
+    %figure('Name','Test Approximation','NumberTitle','off');
+    %hold on
+    %plot(x_list_continuous, mode_shape_WE, 'k'); hold off
 
     figure('Name','Continuous vs Discrete Approximations','NumberTitle','off');
     hold on;
 
+    omega_list = [];
+
     for k = 1:length(num_masses)
         n = num_masses(k);
         string_params.n = n;
-        string_params.dx = string_params.L/(n+1); %horizontal spacing between masses
+        string_params.dx = string_params.L/(n+1); % horizontal spacing between masses
 
 
         [M_mat, K_mat]= construct_2nd_order_matrices(string_params);
@@ -215,21 +220,43 @@ function string_simulation_01()
         %Use MATLAB to solve the generalized eigenvalue problem
         [Ur_mat,lambda_mat] = eig(K_mat,M_mat);
 
-        mode_shape_LA = ([0; Ur_mat(:, mode_index); 0])
-        %mode_shape_LA = 1/max(abs(mode_shape_LA));
-
+        mode_shape_LA = ([0; Ur_mat(:, mode_index); 0]);
+        mode_shape_LA = mode_shape_LA/max(abs(mode_shape_LA));
+        mode_shape_LA = mode_shape_LA*sign(mode_shape_LA(2));
         
-    
+        omega_n = sqrt(lambda_mat(mode_index, mode_index));
+        omega_list(end+1) = omega_n;
+
         x_list = linspace(0, string_params.L, n+2);
         %x_list = x_list(2:end-1);
 
         
         
-        subplot(length(num_masses)/2, length(num_masses)/2, k);
-        plot(x_list_continuous, mode_shape_WE, 'k'); hold on
-        plot(x_list, mode_shape_LA, 'o-', 'color', 'k', 'markerfacecolor', 'r', 'markeredgecolor', 'r', 'markersize', 4);
-        legend("Continuous", "Discrete");
+        %subplot(length(num_masses)/2, length(num_masses)/2, k);
+        %plot(x_list_continuous, mode_shape_WE, 'k'); hold on
+        
+
+        %plot(x_list, mode_shape_LA, 'o-', 'color', 'k', 'markerfacecolor', 'r', 'markeredgecolor', 'r', 'markersize', 4);
+        %plot_title = sprintf('%d masses', n);
+        %title(plot_title)
+        %legend("Continuous", "Discrete");
     end
+
+    hold off
+    figure('Name','Approximation error of Discrete Function','NumberTitle','off');
+
+    %approx_error = abs(omega_list - omega_n_spatial);
+
+    semilogy(num_masses, omega_list, 'o-', 'markerfacecolor', 'r', 'markersize', 3);
+    hold on
+    semilogy(num_masses, ones(length(num_masses), 1)*omega_n2, 'b--', 'linewidth', 2);
+    legend("Discrete", "Continuous")
+    title("Approximation Error of Discrete Resonant Frequency")
+
+
+    %figure('Name','Approximation error of Discrete Function V2','NumberTitle','off');
+    %loglog(num_masses, abs(omega_list-omega_n2), 'o-', 'markerfacecolor', 'r', 'markersize', 3);
+  
 end
 
     

@@ -22,7 +22,7 @@ function experiment04()
     c = sqrt(string_params.Tf/rho);
 
     omega_n_spatial = pi*mode_index/string_params.L;
-    omega_n = c*omega_n_spatial;
+    %omega_n = c*omega_n_spatial;
     
     x_list = linspace(0, string_params.L, n+2);
     x_list = x_list(2:end-1);
@@ -52,7 +52,7 @@ function experiment04()
         mode_shape_LA = 1/max(abs(mode_shape_LA));
 
         omega_n = sqrt(-lambda_mat(n+1-mode_index, n+1-mode_index));
-        omega_list(end+1)
+        omega_list(end+1) = omega_n;
         x_list = linspace(0, string_params.L, n+2)';
 
         subplot(x_list, mode_shape_LA, 'o-', 'color', 'k', 'linewidth', 2, 'markerfacecolor', 'r', 'markeredgecolor', 'r', 'markersize', 4);
